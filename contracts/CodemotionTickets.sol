@@ -3,19 +3,13 @@ pragma solidity ^0.8.0;
 
 contract CodemotionTickets {
 
-    address[] public tickets;
+    mapping(address => bool) private tickets;
 
     function buyTicket() external {
-        tickets.push(msg.sender);
+        tickets[msg.sender] = true;
     }
 
     function verifyTicket() external view returns (bool) {
-        for (uint i = 0; i < tickets.length; i++) {
-            if (tickets[i] == msg.sender) {
-                return true;
-            }
-        }
-
-        return false;
+        return tickets[msg.sender];
     }
 }
