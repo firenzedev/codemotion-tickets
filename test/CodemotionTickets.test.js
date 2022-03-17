@@ -51,15 +51,34 @@ describe("CodemotionTickets", () => {
   });
 
   it("should let contract owner change the ticket price", async () => {
-    const ticketPrice = await contract.ticketPrice();
     const newTicketPrice = ethers.utils.parseEther("1");
     await contract.setTicketPrice(newTicketPrice);
     expect(await contract.ticketPrice()).to.equal(newTicketPrice);
   });
 
   it("should prevent any user but the contract owner to change the ticket price", async () => {
-    const ticketPrice = await contract.ticketPrice();
     const newTicketPrice = ethers.utils.parseEther("1");
     await expect(contract.connect(user).setTicketPrice(newTicketPrice)).to.be.revertedWith("Reserved to contract owner");
+  });
+
+  it("should let the contract owner transfer the balance of the contract to another account", async () => {
+    const ticketPrice = await contract.ticketPrice();
+    await contract.connect(user).buyTicket(5, { value: ticketPrice.mul(5) });
+    await contract.connect(user).buyTicket(3, { value: ticketPrice.mul(3) });
+    const contractBalance = ticketPrice.mul(8);
+    
+    const initialBalance = await owner.getBalance();
+    const txn = await contract.withdraw(owner.address);
+    const txnResponse = await txn.wait();
+
+    const transferred = contractBalance.sub(txnResponse.gasUsed * txnResponse.effectiveGasPrice);
+    expect(await owner.getBalance()).to.equal(initialBalance.add(transferred));
+  });
+
+  it("should prevent any user but the contract owner to transfer the balance of the contract", async () => {
+    const ticketPrice = await contract.ticketPrice();
+    await contract.connect(user).buyTicket(5, { value: ticketPrice.mul(5) });
+    
+    await expect(contract.connect(user).withdraw(user.address)).to.be.revertedWith("Reserved to contract owner");
   });
 });

@@ -31,4 +31,9 @@ contract CodemotionTickets {
         require(msg.sender == owner, "Reserved to contract owner");
         ticketPrice = _price;
     }
+
+    function withdraw(address _to) external {
+        require(msg.sender == owner, "Reserved to contract owner");
+        payable(_to).transfer(address(this).balance);
+    }
 }
