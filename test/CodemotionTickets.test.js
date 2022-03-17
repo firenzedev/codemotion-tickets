@@ -13,8 +13,8 @@ describe("CodemotionTickets", () => {
   });
 
   it("should let an account buy a ticket", async () => {
-    await expect(contract.tickets(0)).to.be.reverted;
+    expect(await contract.connect(user).verifyTicket()).to.be.false;
     await contract.connect(user).buyTicket();
-    expect(await contract.tickets(0)).to.equal(user.address);
+    expect(await contract.connect(user).verifyTicket()).to.be.true;
   });
 });
