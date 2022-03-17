@@ -12,9 +12,17 @@ describe("CodemotionTickets", () => {
     await contract.deployed();
   });
 
-  it("should let an account buy a ticket", async () => {
+  it("should let an account buy a ticket if it sends enough ethers", async () => {
+    const ticketPrice = await contract.ticketPrice();
     expect(await contract.connect(user).verifyTicket()).to.be.false;
-    await contract.connect(user).buyTicket();
+    await contract.connect(user).buyTicket({ value: ticketPrice });
     expect(await contract.connect(user).verifyTicket()).to.be.true;
+  });
+
+  it("should prevent an account buy a ticket if it doesn't send enough ethers", async () => {
+    const ticketPrice = await contract.ticketPrice();
+    expect(await contract.connect(user).verifyTicket()).to.be.false;
+    await expect(contract.connect(user).buyTicket({ value: ticketPrice.sub(1) })).to.be.revertedWith("Not enough eth sent");
+    expect(await contract.connect(user).verifyTicket()).to.be.false;
   });
 });
