@@ -11,6 +11,11 @@ contract CodemotionTickets {
 
     mapping(address => uint) private tickets;
 
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Reserved to contract owner");
+        _;
+    }
+
     constructor() {
         owner = msg.sender;
     }
@@ -27,13 +32,11 @@ contract CodemotionTickets {
         return tickets[msg.sender] > 0;
     }
 
-    function setTicketPrice(uint _price) external {
-        require(msg.sender == owner, "Reserved to contract owner");
+    function setTicketPrice(uint _price) external onlyOwner {
         ticketPrice = _price;
     }
 
-    function withdraw(address _to) external {
-        require(msg.sender == owner, "Reserved to contract owner");
+    function withdraw(address _to) external onlyOwner {
         payable(_to).transfer(address(this).balance);
     }
 }
