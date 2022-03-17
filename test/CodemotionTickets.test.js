@@ -40,4 +40,14 @@ describe("CodemotionTickets", () => {
     expect(await contract.connect(user).verifyTicket()).to.be.false;
   });
 
+  it("should prevent an account buy a ticket if max supply has been reached", async () => {
+    const ticketPrice = await contract.ticketPrice();
+    const maxSupply = await contract.MAX_SUPPLY();
+    const firstPurchaseQuantity = maxSupply.sub(2);
+
+    await contract.connect(user).buyTicket(firstPurchaseQuantity, { value: ticketPrice.mul(firstPurchaseQuantity) });
+    await contract.connect(user).buyTicket(2, { value: ticketPrice.mul(2) });
+    await expect(contract.connect(user).buyTicket(1, { value: ticketPrice })).to.be.revertedWith("No more tickets available");
+  });
+
 });
