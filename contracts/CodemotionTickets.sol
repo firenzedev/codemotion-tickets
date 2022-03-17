@@ -1,24 +1,16 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract CodemotionTickets {
+import "./Ownable.sol";
+
+contract CodemotionTickets is Ownable {
 
     uint public constant MAX_SUPPLY = 500;
 
     uint public ticketPrice = 0.5 ether;
     uint private currentSupply = 0;
-    address private owner;
 
     mapping(address => uint) private tickets;
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Reserved to contract owner");
-        _;
-    }
-
-    constructor() {
-        owner = msg.sender;
-    }
 
     function buyTicket(uint _amount) external payable {
         require(msg.value >= ticketPrice * _amount, "Not enough eth sent");
