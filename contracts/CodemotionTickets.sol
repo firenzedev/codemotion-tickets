@@ -7,8 +7,13 @@ contract CodemotionTickets {
 
     uint public ticketPrice = 0.5 ether;
     uint private currentSupply = 0;
+    address private owner;
 
     mapping(address => uint) private tickets;
+
+    constructor() {
+        owner = msg.sender;
+    }
 
     function buyTicket(uint _amount) external payable {
         require(msg.value >= ticketPrice * _amount, "Not enough eth sent");
@@ -20,5 +25,10 @@ contract CodemotionTickets {
 
     function verifyTicket() external view returns (bool) {
         return tickets[msg.sender] > 0;
+    }
+
+    function setTicketPrice(uint _price) external {
+        require(msg.sender == owner, "Reserved to contract owner");
+        ticketPrice = _price;
     }
 }

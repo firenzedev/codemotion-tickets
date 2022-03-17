@@ -50,4 +50,16 @@ describe("CodemotionTickets", () => {
     await expect(contract.connect(user).buyTicket(1, { value: ticketPrice })).to.be.revertedWith("No more tickets available");
   });
 
+  it("should let contract owner change the ticket price", async () => {
+    const ticketPrice = await contract.ticketPrice();
+    const newTicketPrice = ethers.utils.parseEther("1");
+    await contract.setTicketPrice(newTicketPrice);
+    expect(await contract.ticketPrice()).to.equal(newTicketPrice);
+  });
+
+  it("should prevent any user but the contract owner to change the ticket price", async () => {
+    const ticketPrice = await contract.ticketPrice();
+    const newTicketPrice = ethers.utils.parseEther("1");
+    await expect(contract.connect(user).setTicketPrice(newTicketPrice)).to.be.revertedWith("Reserved to contract owner");
+  });
 });
