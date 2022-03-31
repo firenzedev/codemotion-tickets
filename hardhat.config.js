@@ -1,6 +1,8 @@
-const { task } = require("hardhat/config");
-
+require('dotenv').config();
 require("@nomiclabs/hardhat-waffle");
+
+const { task } = require("hardhat/config");
+const { PRIVATE_KEY, ROPSTEN_API_URL } = process.env;
 
 task("buyTicket", "buy a Codemotion ticket")
   .addParam("contractAddress", "address of the contract")
@@ -24,5 +26,11 @@ task("buyTicket", "buy a Codemotion ticket")
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  networks: {
+    ropsten: {
+      url: ROPSTEN_API_URL,
+      accounts: [ PRIVATE_KEY ],
+    },
+  },
   solidity: "0.8.4",
 };
