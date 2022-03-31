@@ -79,7 +79,3 @@ L'EduPath "Sviluppare un'applicazione decentralizzata su blockchain" si compone 
 * **Episodio 10:** *Deploy su blockchain pubblica*
 
     Deploy su rete di test e interazione con il contratto su rete pubblica
-
-* **Episodio 11:** *Le dApps: decentralized applications*
-
-    Come interagire con lo smart contract direttamente dal browser, utilizzando un'applicazione decentralizzata (dApp)
